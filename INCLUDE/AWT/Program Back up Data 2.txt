@@ -1,0 +1,534 @@
+// Test Script : main program for Windows tool kit initialization to registration key.
+
+#include<stdio.h>
+#include<conio.h>
+#include<iostream.h>
+#include<temp1.h>
+
+main()	{
+	clrscr();
+	getch();
+	clrscr();
+	Button 	bttn1(10,30,"Save Button");
+	TextBox txt1(10,10,15);
+	Label 	lbl1(10,20,"Description of Machin");
+	Window 	win("First Windows Program");
+
+	printf("\n\n Main : Address of object lbl1  : %u",&lbl1);
+	lbl1.add(win);
+
+	printf("\n\n Main : Address of object txt1  : %u",&txt1);
+	txt1.add(win);
+
+
+	printf("\n\n Main : Address of object win  : %u",&win);
+	win.add();
+
+	printf("\n\n Main : Address of object bttn1  : %u",&bttn1);
+	bttn1.add(win);
+
+	getch();
+	printf("\n\n From Object's  ");
+	printf("\n\t %s\tID : %d  ",win.Title,win.regId);
+	printf("\n\t %s\tID : %d  x : %d  y1 : %d  y2 : %d",bttn1.Text,bttn1.regId,bttn1.x,bttn1.y1,bttn1.y2);
+	printf("\n\t\t %d\tID : %d  x : %d  y1 : %d  y2 : %d",txt1.str_len,txt1.regId,txt1.x,txt1.y1,txt1.y2);
+	printf("\n\t %s\tID : %d  x : %d  y1 : %d  y2 : %d",lbl1.Text,lbl1.regId,lbl1.x,lbl1.y1,lbl1.y2);
+
+	printf("\n\n From Vector's ");
+
+	initRunnableThread();
+	getch();
+	bttn1.Text = "New Save";
+	bttn1.x = 2;
+	bttn1.y1 = 3;
+	bttn1.y2 = 4;
+
+	win.Title = "Second Program";
+	lbl1.Text = "Text Changed";
+	txt1.str_len = 5;
+	txt1.x = 7;
+	txt1.y1 = 8;
+	txt1.y2 = 9;
+
+	printf("\n\n From Object's  ");
+	printf("\n\t %s\tID : %d  ",win.Title,win.regId);
+	printf("\n\t %s\tID : %d  x : %d  y1 : %d  y2 : %d",bttn1.Text,bttn1.regId,bttn1.x,bttn1.y1,bttn1.y2);
+	printf("\n\t\t %d\tID : %d  x : %d  y1 : %d  y2 : %d",txt1.str_len,txt1.regId,txt1.x,txt1.y1,txt1.y2);
+	printf("\n\t %s\tID : %d  x : %d  y1 : %d  y2 : %d",lbl1.Text,lbl1.regId,lbl1.x,lbl1.y1,lbl1.y2);
+
+	printf("\n\n From Vector's ");
+	initRunnableThread();
+	getch();
+	win.displayReg();
+	getch();
+}
+
+// Main Header File Programs 
+// Temp.h  -----------------------------------------------------------------------------------------------------------------
+#include<dos.h>
+#include<stdlib.h>
+#include<graphics.h>
+#include<iostream.h>
+#include<AWT\WINDOW.H>
+#include<AWT\BUTTON.H>
+#include<AWT\LABEL.H>
+#include<AWT\TEXTBOX.H>
+#include<AWT\MOUSE.H>
+#include<AWT\stdfun.h>
+
+#include<AWT\GrpInit.h>
+
+
+// Used to specify the type Object currently used by ToolKit...
+enum objectTypeSpecifier { _WINDOW_ = 1, _BUTTON_, _LABEL_, _TEXTBOX_, _MENU_};		
+
+static int IX = 0 ;		// holds the count for number of objcted created runtime...
+static unsigned int multiWindow = 0;
+class Abstract_Windows_DOS_Mode_ToolKit {
+    public:
+		Window 	*OW;
+		Button	*OB;
+		Label	*OL;
+		TextBox	*OT;
+		unsigned int objType;
+
+	Tool_Kit(){  printf("\n\n\n Tool_Kit Created...\n\n");  }
+
+
+	void putWindowObj(Window *wObj)	{
+		OB = NULL;
+		OL = NULL;
+		OT = NULL;
+		objType = _WINDOW_;
+		OW = wObj; 
+		//printf("\n From Windows  Kit Class\t : %u  :  %u\t Type  : %d",wObj,OW,objType);
+	}
+	void putButtonObj(Button *bObj)	{
+		OW = NULL;
+		OL = NULL;
+		OT = NULL;
+		objType = _BUTTON_;
+		OB = bObj;
+		//printf("\n From Button  Kit Class\t : %u  :  %u\t Type  : %d",bObj,OB,objType);
+	}
+
+	void putLabelObj(Label *lObj)	{
+		OW = NULL;
+		OB = NULL;
+		OT = NULL;
+		objType = _LABEL_;
+		OL = lObj;
+		//printf("\n From Label   Kit Class\t : %u  :  %u\t Type  : %d",lObj,OL,objType);
+	}
+
+	void putTextBoxObj(TextBox *tObj)	{
+		OW = NULL;
+		OB = NULL;
+		OL = NULL;
+		objType = _TEXTBOX_;
+		OT = tObj;
+		//printf("\n From TextBox Kit Class\t : %u  :  %u\t Type  : %d",tObj,OT,objType);
+	}
+
+};
+
+template <class Tbttn>
+void addButton(Tbttn TemplateObjButton)		{  Kit[IX++].putButtonObj(TemplateObjButton); 	}
+
+template <class Tlbl>
+void addLabel(Tlbl TemplateObjLabel)   		{  Kit[IX++].putLabelObj(TemplateObjLabel); 	}
+
+template <class Ttxt>
+void addTextBox(Ttxt TemplateObjTextBox) 	{  Kit[IX++].putTextBoxObj(TemplateObjTextBox); }
+
+template <class Twind>
+void addWindow(Twind TemplateObjWindow)		{  Kit[IX++].putWindowObj(TemplateObjWindow); 	}
+
+Abstract_Windows_DOS_Mode_ToolKit 	*Kit;
+
+initRunnableThread()	{
+	int k;
+	
+	for( k=0; k < IX; k++ ) 	{
+		if( Kit[k].objType == _WINDOW_ )
+			printf("\n %u  W : %s\tID : %d  ",Kit[k].OW,Kit[k].OW->Title,Kit[k].OW->regId);
+		if( Kit[k].objType == _BUTTON_ )
+			printf("\n %u  B : %s\t Id : %d\tx : %d\ty1 : %d\ty2 : %d",Kit[k].OB,Kit[k].OB->Text,Kit[k].OB->regId,Kit[k].OB->x,Kit[k].OB->y1,Kit[k].OB->y2);
+		if( Kit[k].objType == _LABEL_ )
+			printf("\n %u  L : %s\t Id : %d\tx : %d\ty1 : %d\ty2 : %d",Kit[k].OL,Kit[k].OL->Text, Kit[k].OL->regId,Kit[k].OL->x,Kit[k].OL->y1,Kit[k].OL->y2);
+		if( Kit[k].objType == _TEXTBOX_ )
+			printf("\n %u  T : %d\tID : %d  x : %d  y1 : %d  y2 : %d",Kit[k].OT,Kit[k].OT->str_len,Kit[k].OT->regId,Kit[k].OT->x,Kit[k].OT->y1,Kit[k].OT->y2);
+	}
+
+}
+
+
+
+
+
+
+/*	for( k=0; k < IX; k++ ) 	{
+	if( Kit[k].objType == 1 )
+	printf("\n %u  B : %s\t Id : %d\tx : %d\ty1 : %d\ty2 : %d",Kit[k].OB,Kit[k].OB->Label,Kit[k].OB->regId,Kit[k].OB->x,Kit[k].OB->y1,Kit[k].OB->y2);
+	if( Kit[k].objType == 2 )
+	printf("\n %u  L : %s\t Id : %d\tx : %d\ty1 : %d\ty2 : %d",Kit[k].OL,Kit[k].OL->string, Kit[k].OL->regId,Kit[k].OL->x,Kit[k].OL->y1,Kit[k].OL->y2);
+	if( Kit[k].objType == 3 )
+	printf("\n %u  T : %d\tID : %d  x : %d  y1 : %d  y2 : %d",Kit[k].OT,Kit[k].OT->T_size,Kit[k].OT->regId,Kit[k].OT->x,Kit[k].OT->y1,Kit[k].OT->y2);
+	}
+*/
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------
+// Button header File
+
+#include<string.h>
+extern unsigned int multiWindow;
+extern int getRegID();
+template <class Tbttn>
+int addButton(Tbttn TemplateObjButton);
+
+class Button {
+   public:
+	char *Text;
+	int regId, regFlag, Active, Enabled, winOpen, Index;
+	int x, y1, y2, TextLen, bttnBgClr, bttnTxtClr;
+	public:
+	Button(){
+		Text = " Not Assigned ";
+		regId = Index = -1;
+		x = y1 = y2 = -1;
+		Active = Enabled = regFlag = winOpen = 0;
+	}
+	Button( int _x, int _y, char *_name );
+
+	void add(){
+
+		if( regFlag == 0 )	{
+			Index = addButton(this);
+			regId = getRegID();
+			regFlag = 1;
+			winOpen = 0;
+		}
+		//printf("\n From Buttons Class \t\t : %u",this);
+	}
+
+	void add(Window &obj){
+		if( regFlag == 0 )	{
+			Index = addButton(this);
+			regId = getRegID();
+			obj.regObject(regId,Index);
+			regFlag = 1;
+			winOpen = 0;
+		}
+		multiWindow = 1;
+		//printf("\n\n\n From Buttons Class \t\t : regFlag : %d",regFlag);
+	}
+	void drawButton();
+};
+
+Button Button::Button( int _x, int _y, char *_name )	{
+		Text = _name;
+		TextLen = strlen( _name );
+		regId = Index = -1;
+		Active = Enabled = regFlag = winOpen = 0;
+
+		if( _x > 24 ) 	x = 24;    // Check for X-Axis		
+		else if( _x < 2 )	x =  2;
+		else 			x = _x;
+
+		if( _y < 1 )	y1 = 1;
+		else			y1 = _y;
+		
+		if( ( _y > 80 ) || (_y+TextLen+2) > 80 )	{
+			y1 = 80 - TextLen + 2 ;
+			if( (y1+TextLen+2) > 80 ) y1 = y1 - 4;
+		}
+		y2 = y1 + TextLen + 2;
+			
+		bttnBgClr = WHITE;
+		bttnTxtClr = BLACK;
+		Enabled = 1 ;
+		Active = 0;
+		regFlag = 0;
+		//setColor(0,0,25,79,BLACK);
+		//drawButton();
+		//getch();
+	//setColor(0,0,25,79,BLUE);
+}
+
+void Button::drawButton() {
+	textbackground(bttnBgClr);
+	textcolor(bttnTxtClr);
+	for(int i = y1; i < y2; i++)	{
+		gotoxy(i,x);
+		cprintf(" ");
+	}
+	textcolor(bttnTxtClr);
+	gotoxy(y1+1,x);
+	cprintf("%s",Text);
+	textbackground(BLACK);
+	textcolor(WHITE);
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------
+// Text Box Header File
+extern int getRegID();
+template <class Ttxt>
+void addTextBox(Ttxt TemplateObjTextBox)	;
+
+class TextBox {
+   public:
+	int str_len,txtClr,boxClr,pos;
+	char *str;
+	int regId, regFlag, Active, Enabled, winOpen;
+	int x, y1, y2, lblLen, bttnBgClr, bttnTxtClr;
+	public:
+	TextBox(){
+		str = " Not Assigned ";
+		regId = -1;
+		x = y1 = y2 = -1;
+		Active = Enabled = str_len = regFlag = -1; 
+	}
+	
+	TextBox( int _x, int _y, int _size )	{
+		str_len = _size;
+		x = _x;
+		y1 = _y;
+		y2 = _y + str_len;
+		regId = -1;
+		Active = Enabled  = regFlag = 0; 
+		//printf("\n From TextBox Class Constructor \t : regFlag : %d\n",regFlag);
+	}
+
+	void add(){
+		if( regFlag == 0 )	{
+			addTextBox(this);
+			regId = getRegID();
+			regFlag = 1;
+		}
+
+		//printf("\n From TexBoxt Class \t\t : %u",this);
+	}
+	
+	void add(Window &obj){
+		if( regFlag == 0 )	{
+			addTextBox(this);
+			regId = getRegID();
+			obj.regObject(regId);
+			regFlag = 1;
+		}
+		//printf("\n From Buttons Class \t\t : %u",this);
+	}
+};
+
+//-----------------------------------------------------------------------------------------------------------------------
+// Label header File
+
+extern int getRegID();
+template <class Tlbl>
+void addLabel(Tlbl TemplateObjLabel);
+
+class  Label{
+
+   public:
+	char *Text;
+	int	 regId, regFlag, Active, Enabled, winOpen;
+	int	 x, y1, y2, lblLen, bttnBgClr, bttnTxtClr;
+	public:
+	Label(){
+		Text = " Not Assigned ";
+		regId = -1;
+		x = y1 = y2 = -1;
+		Active = Enabled = regFlag = lblLen = -1; 
+	}
+	Label(int _x, int _y, char* _dsc)	{
+
+		Text = _dsc;
+		x = _x;
+		y1 = _y;
+		y2 = _y*10;
+		regId = -1;
+		Active = Enabled = regFlag = lblLen = 0;
+	}
+
+	void add(){
+		if( regFlag == 0 )	{
+			addLabel(this);
+			regId = getRegID();
+			regFlag = 1;
+		}
+	//printf("\n From Label Class \t\t : %u",this);
+	}
+	
+	void add(Window &obj){
+		if( regFlag == 0 )	{
+			addLabel(this);
+			regId = getRegID();
+			obj.regObject(regId);
+			regFlag = 1;
+		}
+		//printf("\n From Buttons Class \t\t : %u",this);
+	}
+
+	void drawButton(){}
+}; 
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------
+// windows header file
+extern int getRegID();
+template <class Twin>
+void addWindow(Twin TemplateObjWindow);
+
+class Window {
+   public:
+	char *Title;
+	int regId,regFlag,Active,Enabled;
+	int arrayOfregId[512],arrCount;
+
+  public:
+	Window(){}
+	Window( char *_title )	{
+		Title = _title;
+		regId = getRegID();
+		arrCount = 0;
+	}
+
+	void add()  {
+		addWindow(this);
+		//printf("\n From Windows Class \t\t : %u",this);
+	}
+	void regObject(int _ID_)	{
+		arrayOfregId[ arrCount++ ] = _ID_ ;
+	}
+
+	void displayReg()	{
+	printf("\n\n Windows Registration list : \n");
+		for( int i=0; i < arrCount; i++ )	printf("\n\n RegID  :  %d",arrayOfregId[i]);
+	}
+};
+
+template<class AdderObject>
+void addElement(AdderObject  &AddThis, Window obj)  {
+	AddThis.add();
+	//printf("\n From Windows Class \t\t : %u",this);
+}
+//-------------------------------------------------------------------------------------------------------------------------
+// special Function stdfun.h
+
+int getRegID() {
+	static int __counter_ = 0 ;
+	return ++__counter_;
+}
+
+int getKey(void)
+{
+   union REGS in, out;
+   in.h.ah = 0x08;
+   int86(0x21, &in, &out);
+   if (out.h.al == 0)
+   {
+      return(getKey()+0x100);
+   }
+   else
+   {
+      return(out.h.al);
+   }
+}
+
+
+
+
+// Test Script : for multi-windows management.
+#include<stdio.h>
+#include<conio.h>
+#include<temp1.h>
+#include<new.h>
+
+main()	{
+	clrscr();
+	getch();
+	clrscr();
+	Button 	btn(10,30,"Save Button");
+	TextBox txt(10,10,15);
+	Label 	lbl(10,20,"Description of Machin");
+	Window 	win("First Window Program"),w1,w2;
+	Button  b1,b2,b3;
+	TextBox t1,t2,t3;
+	Label   l1,l2,l3;
+
+	//w.add();
+	b1.add(win);  b2.add(win);  l3.add(win);
+	t1.add(w1);  t2.add(w1);  b3.add(w1);
+	l1.add(w2);  l2.add(w2);  t3.add(w2);
+	btn.add(win);
+	lbl.add(w1);
+	txt.add(w2);
+	win.add();
+	w1.add();
+	w2.add();
+	printf("\n\n From Vector's ");
+	initRunnableThread();
+	getch();
+	clrscr();
+	win.displayReg();
+	getch();
+	clrscr();
+	w1.displayReg();
+	w2.displayReg();
+	getch();
+	clrscr();
+	win.open();
+	getch();
+	clrscr();
+	w1.open();
+	getch();
+	clrscr();
+	w2.open();
+	getch();
+}
+
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------
+// mouse header file 
+
+// Mouse Event Listener Interface implementation...
+class MouseListener {
+	public:
+		int  initmouse();
+		void showmouseptr();
+		void getmousepos(int*,int*,int*);
+};
+
+int MouseListener::initmouse()		{
+	union REGS i,o;
+	i.x.ax = 0;
+	int86(0x33,&i,&o);
+	return ( o.x.ax );
+}
+
+void MouseListener::showmouseptr()	{
+	union REGS i,o;
+	i.x.ax = 1;
+	int86(0x33,&i,&o);
+}
+
+void MouseListener::getmousepos(int *button, int *x, int *y)	{
+	union REGS i,o;
+	i.x.ax = 3;
+	int86(0x33,&i,&o);
+	*button = o.x.bx;
+	*x = o.x.dx;
+	*y = o.x.cx;
+	*x = *x / 8;
+	*y = *y / 8;
+	*x = *x + 1;
+	*y = *y + 1;
+}

@@ -1,0 +1,119 @@
+extern unsigned int multiWindow;
+extern int getRegID();
+template <class Tlbl>
+int addLabel(Tlbl TemplateObjLabel);
+
+class  Label{
+
+   public:
+	char *Text;
+	int	 regId, regFlag, Active, Enabled, winOpen, Index;
+	int	 x1, y1, x2, y2, lblLen, lblBgClr, lblTxtClr;
+	int font_style, direction, font_size;
+	public:
+	Label(){
+		Text   = " Not Assigned ";
+		regId  = lblLen = Index = -1;
+		x1 = x2 = y1 = y2 = -1;
+		Active = Enabled = regFlag = winOpen = 0;
+		font_style = direction = 0;
+		font_size  = 1;
+		lblBgClr   = lblTxtClr = -1;
+	}
+	
+	//int getBackground()				{	return bttnBgClr;  }
+	//int getTextColor()				{	return bttnTxtClr; }
+	int getRegistrationID()			{	return regId;	   }
+	//char* getText()					{	return Text;	   }
+	//int TestButtonIsEnabled()		{	return Enabled;    }
+	int TestWindowIsOpened()		{	return winOpen;    }
+
+	
+	Label(int _x, int _y, char* _dsc)	{
+
+		Text = _dsc;
+		lblLen = strlen( _dsc );
+		x1 = _x + 1;
+		y1 = _y + 1;
+		x2 = x1 + 19;
+		y2 = _y + ( lblLen * 8 ) + 15;
+		regId = Index = lblLen = -1;
+		Active = Enabled = regFlag = winOpen = 0;
+		font_style = direction = 0;
+		font_size  = 1;
+		lblBgClr   = LIGHTGREEN ;
+		lblTxtClr  = BLACK;
+	}
+	
+	void drawLabel(){
+		
+		if( winOpen == 0 ) return;
+		int X1, Y1, X2, Y2;
+		hideMousePointer();
+		setviewport( 0, 19, 639, 464, 1);
+		setfillstyle(SOLID_FILL,lblBgClr);
+		bar(y1, x1, y2, x2);
+		
+		X1 = x1 + 19 ;		
+		Y1 = y1;
+		X2 = x2 + 19;
+		Y2 = y2;
+			
+		if( Y1 > 639 )	return;
+		if( Y2 > 639 )	Y2 = 635; 
+		if( X1 > 464 )	return;
+		if( X2 > 464 )	X2 = 463;
+		setcolor(lblTxtClr);
+		settextstyle(font_style, direction, font_size);
+		setviewport(Y1, X1, Y2, X2,1);
+
+		gprintf( 5, 5, "%s", Text);
+		showMousePointer();
+	}
+	
+
+	
+	
+	void add(){
+		if( regFlag == 0 )	{
+			Index = addLabel(this);
+			regId = getRegID();
+			regFlag = 1;
+			winOpen = 0;
+		}
+	//printf("\n From Label Class \t\t : %u",this);
+	}
+	
+	void add(Window &obj){
+		if( regFlag == 0 )	{
+			Index = addLabel(this);
+			regId = getRegID();
+			obj.regObject(regId,Index);
+			regFlag = 1;
+			winOpen = 0;
+		}
+		multiWindow = 1;
+		//printf("\n From Buttons Class \t\t : %u",this);
+	}
+	void setLabel(char * _lbl){
+		Text = _lbl;
+		drawLabel();
+	}
+	
+	void setFontStyle(int _style){
+		font_style = _style;
+		drawLabel();
+	}
+
+	void setFontSize(int _size){
+		font_size = _size;
+		drawLabel();
+	}
+
+	void setFontDirection(int _dir){
+		direction = _dir;
+		drawLabel();
+	}
+
+	
+}; 

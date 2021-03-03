@@ -1,0 +1,167 @@
+
+
+int background = LIGHTGRAY	;
+extern unsigned int currentBgClr;
+extern int initGraphFlag;
+static int defWindowOpen = 0;
+char *Title = "Defalut Windows : Unname Workspace.";
+
+	int  openDefalutWindow();
+	void drawDefaultWindow();
+	void setTitle(char *title);
+	void windowOptionLabel();
+	void backwardButton();
+	void forwardButton();
+	void setStatusLine(char *status);
+	void timeLine();
+	void closeButton(int bgClr, int xClr, int reDraw);
+	int openDefalutWindow()	{
+		
+		if ( defWindowOpen == 1 ) return 0;
+		if( initGraphFlag == 0 )	{
+			initGraphicMode();
+			initGraphFlag  =  1;
+			initMousePointer();
+		}
+		defWindowOpen = 1;
+		hideMousePointer();
+		drawDefaultWindow();
+		showMousePointer();
+		return 1;
+	}
+
+	void drawDefaultWindow()	{
+		currentBgClr = background;
+		cleardevice();
+		setviewport( 0, 0, 639, 479, 1 );
+		setfillstyle(SOLID_FILL, background);	
+		bar( 0, 16, 639, 479 );	
+		
+		setfillstyle(SOLID_FILL, BLACK);
+		bar( 0, 0, 639, 18 );
+		setcolor( LIGHTGREEN );
+		rectangle( 0, 0, 639, 18 );
+
+		bar( 0,465,639,479);
+		setcolor( LIGHTGREEN );
+		rectangle( 0,465,639,479);
+		
+		setviewport( 62, 0, 530, 18, 1 );
+		setcolor( WHITE );
+		settextstyle(0, 0, 1);
+		gprintf( 0, 7, "%s", Title);
+
+		backwardButton();
+		forwardButton();
+		windowOptionLabel();
+		timeLine();
+		closeButton(LIGHTRED, BROWN,0);
+	}
+	void closeButton(int bgClr, int xClr, int reDraw)	{
+		setviewport( 601, 0, 639, 18, 1 );
+		setfillstyle(SOLID_FILL, bgClr);
+		setcolor(RED);
+		fillellipse( 24, 9, 11, 8 );
+		settextstyle(0, 0, 2);
+		setcolor( xClr );
+		gprintf( 18, 1, "x");
+		if( reDraw == 1 ) closeButton(LIGHTRED,BROWN,0);
+	}
+	void setTitle(char *title)	{
+	
+		Title = title;
+		if ( defWindowOpen == 0 )	return;
+		hideMousePointer();
+		setviewport( 62, 0, 535, 18, 1 );
+		clearviewport();
+
+		setfillstyle(SOLID_FILL, BLACK);
+		bar( 0, 0, 470, 18);
+		setcolor( LIGHTGREEN );
+		//line( 556, 0, 556, 18);
+		line( 0, 0, 480, 0);
+		line( 0, 18, 480, 18);
+		
+		setviewport( 62, 0, 530, 18, 1 );
+		settextstyle(0, 0, 1);
+		setcolor( WHITE );		
+		gprintf( 0, 7, "%s", Title);
+		showMousePointer();
+	}
+
+	void windowOptionLabel()	{
+	
+		hideMousePointer();
+		setviewport( 0, 0, 16, 18, 1 );
+		setcolor( LIGHTRED );
+		setlinestyle(0, 0,1);
+		line( 7, 7, 15, 7);
+		line( 7, 10, 15, 10);
+		line( 7, 13, 15, 13);
+		showMousePointer();		
+	}
+	
+	void backwardButton()	{
+		hideMousePointer();
+		setviewport( 20, 0, 38, 18, 1 );
+		setfillstyle(SOLID_FILL, DARKGRAY);
+		setcolor( DARKGRAY );
+		fillellipse( 8, 10, 8, 6 );
+		
+		settextstyle(0, 0, 1);
+		setcolor( BLACK );
+		gprintf( 4, 7, "%c", 17 );
+		showMousePointer();
+	}
+	
+	void forwardButton()	{
+		hideMousePointer();
+		setviewport( 39, 0, 60, 18, 1 );
+		setfillstyle(SOLID_FILL, DARKGRAY);
+		setcolor( DARKGRAY );
+		fillellipse( 8, 10, 8, 6 );
+		
+		settextstyle(0, 0, 1);
+		setcolor( BLACK );
+		gprintf( 6, 7, "%c", 16 );
+		showMousePointer();
+	}
+
+	void setStatusLine(char *status)	{
+		
+		if ( defWindowOpen == 0 )	return;
+		delay(20);
+		hideMousePointer();
+		setviewport( 0, 465, 540, 479, 1 );
+		clearviewport();
+		
+		setfillstyle(SOLID_FILL, BLACK);
+		bar(0,0,540,14);
+		setcolor( LIGHTGREEN );
+		rectangle(0,0,540,14);
+		
+		setviewport( 0, 465, 520, 479, 1 );
+		setcolor( WHITE );
+		settextstyle(0, 0, 1);
+		gprintf( 5, 4, "%s", status);	
+		showMousePointer();
+	}
+
+	void timeLine()	{
+		lt = time(NULL);	
+		local = localtime(&lt);
+		strftime(str,100,"  %I:%M %p",local);
+		if(	strcmpi(str,prev) == 0 )	return;
+		strcpy(prev,str);
+
+		hideMousePointer();
+		setviewport( 541, 465, 639, 479, 1 );
+		setfillstyle(SOLID_FILL, LIGHTGREEN);			
+		bar( 0, 0, 98, 14 );
+		setcolor(GREEN);
+		rectangle( 0, 0, 98, 14 );
+		setcolor(BLACK);
+		settextstyle(0, 0, 1);
+		gprintf( 5, 4, str);
+		showMousePointer();
+	}

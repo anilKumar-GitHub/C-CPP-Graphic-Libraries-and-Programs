@@ -1,0 +1,21 @@
+
+int getRegID() {
+	static int __counter_ = 0 ;
+	return ++__counter_;
+}
+
+
+int getKey(void)
+{
+   union REGS in, out;
+   in.h.ah = 0x08;
+   int86(0x21, &in, &out);
+   if (out.h.al == 0)
+   {
+      return(getKey()+0x100);
+   }
+   else
+   {
+      return(out.h.al);
+   }
+}

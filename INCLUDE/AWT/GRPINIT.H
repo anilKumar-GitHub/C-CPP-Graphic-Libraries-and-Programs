@@ -1,0 +1,36 @@
+
+/*	INITIALIZE: Initializes the graphics system and reports 	*/
+/*	any errors which occured.		*/
+
+#include<graphics.h>
+
+int    GraphDriver;								/* The Graphics device driver		*/
+int    GraphMode;								/* The Graphics mode value		*/
+char   pathToGraphicsDriver[15] = "..//bgi";	/* The Graphics device driver path setting */
+double AspectRatio;								/* Aspect ratio of a pixel on the screen*/
+int    MaxX, MaxY;								/* The maximum resolution of the screen */
+int    MaxColors;								/* The maximum # of colors available	*/
+int    ErrorCode;								/* Reports any graphics errors		*/
+struct palettetype palette;						/* Used to read palette info	*/
+
+void initGraphicMode(void)
+{
+  int xasp, yasp;			/* Used to read the aspect ratio*/
+
+  GraphDriver = DETECT; 		/* Request auto-detection	*/
+  initgraph( &GraphDriver, &GraphMode, pathToGraphicsDriver );
+  ErrorCode = graphresult();		/* Read result of initialization*/
+  if( ErrorCode != grOk ){		/* Error occured during init	*/
+    printf(" Graphics System Error: %s\n", grapherrormsg( ErrorCode ) );
+    exit( 1 );
+  }
+
+  getpalette( &palette );		/* Read the palette from board	*/
+  MaxColors = getmaxcolor() + 1;	/* Read maximum number of colors*/
+
+  MaxX = getmaxx();
+  MaxY = getmaxy();			/* Read size of screen		*/
+
+  getaspectratio( &xasp, &yasp );	/* read the hardware aspect	*/
+  AspectRatio = (double)xasp / (double)yasp; /* Get correction factor	*/
+}

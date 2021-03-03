@@ -1,0 +1,45 @@
+Button Button::Button( int _x, int _y, char *_name )	{
+	Text  	= _name;
+	TextLen = strlen( _name );
+	regId 	= Index 	= -1;
+	Active 	= Enabled 	= regFlag	= winOpen	= 0;
+
+	if( _x > 24 ) 	x = 24;    // Check for X-Axis		
+	else if( _x < 2 )	x =  2;
+	else 			x = _x;
+
+	if( _y < 1 )	y1 = 1;
+	else			y1 = _y;
+		
+	if( ( _y > 80 ) || (_y+TextLen+2) > 80 )	{
+		y1 = 80 - TextLen + 2 ;
+		if( (y1+TextLen+2) > 80 ) y1 = y1 - 4;
+	}
+	y2 = y1 + TextLen + 2;
+		
+	bttnBgClr = WHITE;
+	bttnTxtClr = BLACK;
+	Enabled = 1 ;
+	Active = 0;
+	regFlag = 0;
+	//setColor(0,0,25,79,BLACK);
+	//drawButton();
+	//getch();
+	//setColor(0,0,25,79,BLUE);
+}
+
+
+
+void Button::drawButton() {
+	textbackground(bttnBgClr);
+	textcolor(bttnTxtClr);
+	for(int i = y1; i < y2; i++)	{
+		gotoxy(i,x);
+		cprintf(" ");
+	}
+	textcolor(bttnTxtClr);
+	gotoxy(y1+1,x);
+	cprintf("%s",Text);
+	textbackground(BLACK);
+	textcolor(WHITE);
+}
